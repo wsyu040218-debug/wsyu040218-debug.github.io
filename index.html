@@ -989,70 +989,57 @@
 
     const pdfEl = buildPdfDom();
 
-    // 全屏半透明遮罩：挡住用户视线，但不影响 html2canvas 对 pdfEl 自身的捕获
-    const mask = document.createElement('div');
-    mask.id = 'pdf-export-mask';
-    mask.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(255,240,246,0.96);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#e83e8c;letter-spacing:2px;font-family:"Noto Serif SC",serif;';
-    mask.textContent = '🌸 简历生成中，请稍候…';
-
-    // 将 pdfEl 放置在屏幕可视区之外，避免被遮罩层覆盖而导致空白
-    pdfEl.style.position = 'absolute';
+    // 将 pdfEl 置于最顶层，html2canvas 可直接看到并捕获其内容
+    pdfEl.style.position = 'fixed';
     pdfEl.style.top = '0';
-    pdfEl.style.left = '-9999px';
-    pdfEl.style.zIndex = '-1';
+    pdfEl.style.left = '0';
+    pdfEl.style.zIndex = '10000';
     pdfEl.style.overflow = 'visible';
-
     document.body.appendChild(pdfEl);
-    document.body.appendChild(mask);
 
-    // 等待字体与图片渲染完成后再截图（300ms 给浏览器布局时间）
-    setTimeout(() => {
-      const opt = {
-        margin:      [6, 6, 6, 6],        // mm
-        filename:    '吴诗雨_软件测试工程师简历.pdf',
-        image:       { type: 'jpeg', quality: 0.97 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: '#ffffff',
-          onclone: (clonedDoc, element) => {
-            // 从克隆文档中移除遮罩，防止其覆盖捕获内容
-            const m = clonedDoc.getElementById('pdf-export-mask');
-            if (m) m.parentNode.removeChild(m);
-            // 将 pdfEl 拉回到可捕获区域（克隆中）
-            element.style.left = '0';
-          }
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait'
-        }
-      };
+    const opt = {
+      margin:      [6, 6, 6, 6],
+      filename:    '吴诗雨_软件测试工程师简历.pdf',
+      image:       { type: 'jpeg', quality: 0.97 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        ignoreElements: (el) => el.id === 'downloadBtn' || el.classList.contains('sakura-bg')
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      }
+    };
 
-      const cleanup = () => {
-        if (document.body.contains(pdfEl)) document.body.removeChild(pdfEl);
-        if (document.body.contains(mask))  document.body.removeChild(mask);
-      };
+    const done = () => {
+      if (document.body.contains(pdfEl)) document.body.removeChild(pdfEl);
+    };
 
-      html2pdf().set(opt).from(pdfEl).save().then(() => {
-        cleanup();
-        btn.classList.remove('loading');
-        btn.querySelector('.fab-icon').textContent = '✅';
-        label.textContent = '下载成功！';
-        setTimeout(() => {
-          btn.querySelector('.fab-icon').textContent = '⬇️';
+    // 等两帧让浏览器完成布局后再截图
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      html2pdf().set(opt).from(pdfEl).save()
+        .then(() => {
+          done();
+          btn.classList.remove('loading');
+          btn.querySelector('.fab-icon').textContent = '✅';
+          label.textContent = '下载成功！';
+          setTimeout(() => {
+            btn.querySelector('.fab-icon').textContent = '⬇️';
+            label.textContent = '导出简历 PDF';
+          }, 2500);
+        })
+        .catch(err => {
+          console.error('PDF export error:', err);
+          done();
+          btn.classList.remove('loading');
           label.textContent = '导出简历 PDF';
-        }, 2500);
-      }).catch(err => {
-        console.error('PDF export error:', err);
-        cleanup();
-        btn.classList.remove('loading');
-        label.textContent = '导出简历 PDF';
-      });
-    }, 300);
+        });
+    }));
   }
 
   // ── 头像保护：Canvas 渲染 + 水印 ────────────────────────────────────────
