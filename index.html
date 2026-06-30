@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>吴诗雨 · 测试工程师</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink-50:  #fff0f6;
+      --pink-100: #ffd6e8;
+      --pink-200: #ffadd4;
+      --pink-300: #ff85bc;
+      --pink-400: #f75fa0;
+      --pink-500: #e83e8c;
+      --lavender:  #e8d5f5;
+      --lavender-deep: #c084fc;
+      --peach: #fde8d8;
+      --peach-deep: #f5a37b;
+      --mint: #d4f5ef;
+      --text-main: #3d2b3d;
+      --text-sub: #7b5e7b;
+      --white: #ffffff;
+      --shadow: 0 8px 32px rgba(232, 62, 140, 0.15);
+      --shadow-hover: 0 16px 48px rgba(232, 62, 140, 0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', serif;
+      background: linear-gradient(135deg, #fff0f6 0%, #fde8f5 30%, #e8d5f5 60%, #dbeafe 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 浮动装饰樱花 */
+    .sakura-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: radial-gradient(circle at 30% 30%, #ffb8d4, #ff85bc);
+      border-radius: 50% 0 50% 0;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-20px) rotate(0deg);   opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* 顶部 Hero */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    .avatar-wrap {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .avatar-ring {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink-300), var(--lavender-deep), var(--peach-deep));
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232, 62, 140, 0.3); }
+      50%       { box-shadow: 0 0 0 16px rgba(232, 62, 140, 0); }
+    }
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff0f6, #fde8f5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      overflow: hidden;
+    }
+    .badge {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      background: linear-gradient(135deg, var(--pink-400), var(--lavender-deep));
+      color: white;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(232,62,140,0.35);
+    }
+    .hero-name {
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, var(--pink-400), var(--lavender-deep), var(--peach-deep));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 6px;
+      margin-bottom: 8px;
+    }
+    .hero-title {
+      font-size: 1rem;
+      color: var(--text-sub);
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+    .hero-contact {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1.5px solid var(--pink-200);
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      box-shadow: 0 2px 12px rgba(232,62,140,0.1);
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .contact-pill:hover {
+      background: var(--pink-50);
+      border-color: var(--pink-300);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232,62,140,0.2);
+    }
+    .contact-pill .icon { font-size: 1rem; }
+
+    /* 分隔线 */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 800px;
+      margin: 0 auto 32px;
+      padding: 0 20px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--pink-200), transparent);
+    }
+    .divider-text {
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      font-size: 0.9rem;
+      color: var(--pink-400);
+      letter-spacing: 3px;
+      white-space: nowrap;
+    }
+
+    /* 内容区 */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* 板块标题 */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-title .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink-400), var(--lavender-deep));
+      flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(232,62,140,0.4);
+    }
+    .section-title h2 {
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--pink-500), var(--lavender-deep));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+    }
+
+    /* 卡片基础样式 */
+    .card {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255, 182, 213, 0.4);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--pink-400), var(--lavender-deep), var(--peach-deep));
+      border-radius: 4px 0 0 4px;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(255, 133, 188, 0.6);
+    }
+
+    /* 教育卡片 */
+    .edu-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .edu-info h3 {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .edu-info .major {
+      font-size: 0.9rem;
+      color: var(--pink-400);
+      margin-bottom: 6px;
+    }
+    .edu-info .detail {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+    .edu-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .gpa-badge {
+      background: linear-gradient(135deg, var(--pink-400), var(--lavender-deep));
+      color: white;
+      border-radius: 12px;
+      padding: 4px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 4px;
+      box-shadow: 0 4px 12px rgba(232,62,140,0.3);
+    }
+    .time-tag {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    /* 工作/项目卡片 */
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .exp-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .exp-header .company {
+      font-size: 0.88rem;
+      color: var(--pink-400);
+      margin-top: 2px;
+    }
+    .exp-tag {
+      background: linear-gradient(135deg, var(--pink-50), var(--lavender));
+      border: 1px solid var(--pink-200);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+    .exp-desc {
+      font-size: 0.875rem;
+      color: var(--text-sub);
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .exp-bullets {
+      list-style: none;
+      padding: 0;
+    }
+    .exp-bullets li {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.75;
+      padding: 3px 0 3px 18px;
+      position: relative;
+    }
+    .exp-bullets li::before {
+      content: '✿';
+      position: absolute;
+      left: 0;
+      color: var(--pink-300);
+      font-size: 0.75rem;
+    }
+
+    /* 技能板块 */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .skill-item {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255, 182, 213, 0.35);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 16px rgba(232,62,140,0.08);
+      transition: all 0.3s ease;
+    }
+    .skill-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(232,62,140,0.18);
+      border-color: var(--pink-200);
+    }
+    .skill-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--pink-500);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .tag:hover { transform: scale(1.05); }
+    .tag-pink   { background: var(--pink-100);  color: var(--pink-500); }
+    .tag-lav    { background: var(--lavender);   color: #7c3aed; }
+    .tag-peach  { background: var(--peach);      color: var(--peach-deep); }
+    .tag-mint   { background: var(--mint);       color: #0d9488; }
+    .tag-white  { background: white; border: 1px solid var(--pink-200); color: var(--text-sub); }
+
+    /* 证书栏 */
+    .cert-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1.5px solid var(--pink-100);
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 0.84rem;
+      color: var(--text-sub);
+      box-shadow: 0 2px 8px rgba(232,62,140,0.08);
+    }
+    .cert-item .cert-icon { font-size: 1rem; }
+
+    /* 自我评价 */
+    .self-eval .eval-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .eval-icon {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--pink-100), var(--lavender));
+    }
+    .eval-content h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .eval-content p {
+      font-size: 0.84rem;
+      color: var(--text-sub);
+      line-height: 1.75;
+    }
+
+    /* 底部装饰 */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.8rem;
+      color: var(--pink-300);
+      letter-spacing: 2px;
+    }
+    .footer .heart { animation: heartbeat 1.2s ease-in-out infinite; display: inline-block; }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .hero-name { font-size: 2.1rem; }
+      .edu-card { flex-direction: column; }
+      .edu-right { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 飘落樱花背景 -->
+<div class="sakura-bg" id="sakuraBg"></div>
+
+<!-- Hero 顶部 -->
+<header class="hero">
+  <div class="avatar-wrap">
+    <div class="avatar-ring">
+      <div class="avatar-inner">🌸</div>
+    </div>
+    <span class="badge">💼 在职</span>
+  </div>
+  <h1 class="hero-name">吴 诗 雨</h1>
+  <p class="hero-title">软件测试工程师 · 区块链技术专业</p>
+  <div class="hero-contact">
+    <a class="contact-pill" href="tel:19194969055">
+      <span class="icon">📱</span> 19194969055
+    </a>
+    <a class="contact-pill" href="mailto:2198658911@qq.com">
+      <span class="icon">📧</span> 2198658911@qq.com
+    </a>
+    <span class="contact-pill">
+      <span class="icon">🌸</span> 女 · 应届生
+    </span>
+    <span class="contact-pill">
+      <span class="icon">📍</span> 深圳
+    </span>
+  </div>
+</header>
+
+<!-- 主内容 -->
+<main class="container">
+
+  <!-- 分隔 -->
+  <div class="divider"><span class="divider-text">✦ 教育背景 ✦</span></div>
+
+  <!-- 教育 -->
+  <div class="card">
+    <div class="edu-card">
+      <div class="edu-info">
+        <h3>🎓 江西软件职业技术大学</h3>
+        <div class="major">区块链技术专业</div>
+        <div class="detail">
+          主修软件测试基础、数据库原理、计算机网络等核心课程<br/>
+          荣誉：2023年全国大学生英语竞赛省二等奖 · 校级「学习标兵」
+        </div>
+      </div>
+      <div class="edu-right">
+        <div class="gpa-badge">GPA 3.7 / 4.0</div>
+        <div class="time-tag">2022.09 — 2026.06</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分隔 -->
+  <div class="divider"><span class="divider-text">✦ 专业技能 ✦</span></div>
+
+  <!-- 技能 -->
+  <div class="skills-grid">
+    <div class="skill-item">
+      <div class="skill-label">🧪 测试理论与工具</div>
+      <div class="skill-tags">
+        <span class="tag tag-pink">黑盒测试</span>
+        <span class="tag tag-pink">TAPD</span>
+        <span class="tag tag-pink">敏捷开发</span>
+        <span class="tag tag-pink">缺陷管理</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label">🔌 接口与网络协议</div>
+      <div class="skill-tags">
+        <span class="tag tag-lav">Postman</span>
+        <span class="tag tag-lav">JMeter</span>
+        <span class="tag tag-lav">Fiddler</span>
+        <span class="tag tag-lav">Charles</span>
+        <span class="tag tag-lav">HTTP/HTTPS</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label">🗄️ 数据库 & Linux</div>
+      <div class="skill-tags">
+        <span class="tag tag-peach">MySQL</span>
+        <span class="tag tag-peach">DDL/DML</span>
+        <span class="tag tag-peach">多表联查</span>
+        <span class="tag tag-peach">Linux命令</span>
+        <span class="tag tag-peach">日志分析</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label">🤖 自动化测试</div>
+      <div class="skill-tags">
+        <span class="tag tag-mint">Python</span>
+        <span class="tag tag-mint">Selenium</span>
+        <span class="tag tag-mint">pytest</span>
+        <span class="tag tag-mint">神策埋点</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label">✨ AI 辅助测试</div>
+      <div class="skill-tags">
+        <span class="tag tag-lav">Claude</span>
+        <span class="tag tag-lav">Kimi</span>
+        <span class="tag tag-lav">Codex</span>
+        <span class="tag tag-pink">PRD分析</span>
+        <span class="tag tag-pink">AI Agent</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label">🔗 区块链专项</div>
+      <div class="skill-tags">
+        <span class="tag tag-peach">MetaMask</span>
+        <span class="tag tag-peach">智能合约</span>
+        <span class="tag tag-peach">IPFS</span>
+        <span class="tag tag-peach">Web3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分隔 -->
+  <div class="divider" style="margin-top:28px"><span class="divider-text">✦ 工作经历 ✦</span></div>
+
+  <!-- 工作1 -->
+  <div class="card">
+    <div class="exp-header">
+      <div>
+        <h3>深圳极光矩阵科技有限公司</h3>
+        <div class="company">软件测试工程师</div>
+      </div>
+      <span class="exp-tag">⏰ 2025.08 — 至今</span>
+    </div>
+    <ul class="exp-bullets">
+      <li>负责魔岛平台国内版/海外版功能测试与版本回归，覆盖 MOD 功能、修改器、联机模块、社区、资讯、支付充值等核心业务模块</li>
+      <li>编写并维护测试用例，执行功能、回归、兼容性及异常流程测试，保障版本按期高质量交付</li>
+      <li>参与接口联调及问题定位，通过日志分析、抓包和数据库校验排查关键链路问题</li>
+      <li>推动自动化测试落地，沉淀核心回归场景，提升测试效率和版本稳定性</li>
+      <li>负责公司内部 AI Agent 项目「数字员工」的功能性测试，涵盖一键生成视频、AI 客服、AI 伴侣、记忆系统等模块</li>
+      <li>🌟 自研 AI Agent 工具：利用周末时间，开发了基于截图/视频分析自动在 TAPD 提交 Bug 单的 AI 工具</li>
+    </ul>
+  </div>
+
+  <!-- 分隔 -->
+  <div class="divider"><span class="divider-text">✦ 项目经历 ✦</span></div>
+
+  <!-- 项目1 -->
+  <div class="card">
+    <div class="exp-header">
+      <div>
+        <h3>🎮 魔岛平台 · PC 端测试</h3>
+        <div class="company">软件测试工程师</div>
+      </div>
+      <span class="exp-tag">2025.08 — 至今</span>
+    </div>
+    <p class="exp-desc">
+      面向 PC 玩家的游戏内容平台，专注于热门单机与联机游戏的 MOD 资源分发、下载管理与便捷安装，整合优质游戏扩展内容与工具服务。
+    </p>
+    <ul class="exp-bullets">
+      <li>负责 PC 客户端功能测试与版本回归，覆盖安装卸载、MOD 模块、修改器模块、联机模块等核心场景</li>
+      <li>参与会员充值、订单状态流转、支付回调等业务链路测试，验证各类异常场景</li>
+      <li>使用 Postman 接口验证 + Fiddler 抓包，辅助精准定位问题</li>
+      <li>结合 SQL 校验后台数据，核对充值与订单展示一致性</li>
+      <li>借助 AI 辅助测试工具生成结构化测试点树状图，提升用例覆盖率</li>
+    </ul>
+  </div>
+
+  <!-- 项目2 -->
+  <div class="card">
+    <div class="exp-header">
+      <div>
+        <h3>🌿 乡村景观展示平台</h3>
+        <div class="company">测试工程师</div>
+      </div>
+      <span class="exp-tag">2025.03 — 2025.07</span>
+    </div>
+    <p class="exp-desc">
+      结合区块链与 GIS 地图技术的 Web 应用，实现乡村文化景观数字化存证与互动展示，采用前后端分离架构，含四类角色 RBAC 权限体系。
+    </p>
+    <ul class="exp-bullets">
+      <li>针对游客、创作者、管理员等四类角色设计 RBAC 权限测试用例，使用 Postman 验证越权访问逻辑</li>
+      <li>执行 Web 安全基础验证，发现并协助修复评论区 XSS 脚本弹窗漏洞</li>
+      <li>验证 JWT Token 过期与伪造拦截机制</li>
+      <li>用 Chrome DevTools 验证地图首屏加载性能（&lt;3 秒）</li>
+      <li>结合 MetaMask 验证 IPFS CID 生成及智能合约调用准确性</li>
+    </ul>
+  </div>
+
+  <!-- 项目3 -->
+  <div class="card">
+    <div class="exp-header">
+      <div>
+        <h3>⭐ 课评星课程评价平台</h3>
+        <div class="company">测试工程师</div>
+      </div>
+      <span class="exp-tag">2024.03 — 2024.05</span>
+    </div>
+    <p class="exp-desc">
+      React + Node.js 开发的课程评价平台，支持课程展示与审核功能，采用三级权限管理体系。
+    </p>
+    <ul class="exp-bullets">
+      <li>设计执行 50+ 测试用例，发现 20 个功能缺陷</li>
+      <li>使用 Postman 验证接口并规范错误码</li>
+      <li>完成 Chrome/Firefox 跨浏览器兼容性测试，解决页面布局错乱问题</li>
+    </ul>
+  </div>
+
+  <!-- 项目4 -->
+  <div class="card">
+    <div class="exp-header">
+      <div>
+        <h3>🏆 竞迹管理竞赛平台</h3>
+        <div class="company">测试工程师</div>
+      </div>
+      <span class="exp-tag">2023.09 — 2024.01</span>
+    </div>
+    <p class="exp-desc">
+      面向赛事管理的综合平台，提供赛事查询、报名及详情展示等核心功能。
+    </p>
+    <ul class="exp-bullets">
+      <li>使用 Postman 自动化断言排查接口状态码误用，推动接口文档更新</li>
+      <li>用 Chrome DevTools 定位 JS 异常与 Firefox 渲染错位问题</li>
+      <li>有效提升跨端体验与平台稳定性</li>
+    </ul>
+  </div>
+
+  <!-- 分隔 -->
+  <div class="divider"><span class="divider-text">✦ 证书与技能 ✦</span></div>
+
+  <div class="card">
+    <div class="cert-list">
+      <div class="cert-item"><span class="cert-icon">🏅</span> 计算机二级（WPS）</div>
+      <div class="cert-item"><span class="cert-icon">🏅</span> 软考初级·信息处理技术员</div>
+      <div class="cert-item"><span class="cert-icon">🔗</span> 区块链应用开发 1+X 证书</div>
+      <div class="cert-item"><span class="cert-icon">🌐</span> 英语四六级</div>
+      <div class="cert-item"><span class="cert-icon">🎤</span> 普通话二级乙等</div>
+    </div>
+  </div>
+
+  <!-- 分隔 -->
+  <div class="divider"><span class="divider-text">✦ 自我评价 ✦</span></div>
+
+  <div class="card self-eval">
+    <div class="eval-item">
+      <div class="eval-icon">🔍</div>
+      <div class="eval-content">
+        <h4>扎实的测试基本功</h4>
+        <p>熟悉软件测试完整生命周期，拥有 PC 端、Web 端及区块链项目的实际测试经验，能快速梳理复杂业务逻辑并设计出高覆盖率的测试用例。</p>
+      </div>
+    </div>
+    <div class="eval-item">
+      <div class="eval-icon">🛠️</div>
+      <div class="eval-content">
+        <h4>拒绝「纯黑盒」，具备深度定位能力</h4>
+        <p>习惯通过 Fiddler 抓包、MySQL 联合查库、Linux 日志分析等手段精准剥离前端展示与后端逻辑缺陷，有效降低与开发的沟通成本。</p>
+      </div>
+    </div>
+    <div class="eval-item">
+      <div class="eval-icon">✨</div>
+      <div class="eval-content">
+        <h4>敏锐的提效意识与 AI 学习力</h4>
+        <p>能灵活运用 Kimi、Claude 等 AI 大模型辅助拓宽测试边界、生成测试场景结构图及排查报错日志，将 AI 深度赋能日常测试工作。</p>
+      </div>
+    </div>
+    <div class="eval-item" style="margin-bottom:0">
+      <div class="eval-icon">🤖</div>
+      <div class="eval-content">
+        <h4>AI 赋能测试 · 工具开发者</h4>
+        <p>具备 AI 测试工具开发能力，能将测试经验沉淀为可复用工具，独立开发了自动提交 Bug 单的 AI Agent，打造个人测试知识库。</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <span>Made with <span class="heart">💗</span> by 吴诗雨 · 2026</span>
+</footer>
+
+<script>
+  // 生成飘落樱花花瓣
+  const bg = document.getElementById('sakuraBg');
+  const colors = ['#ffb8d4','#ff85bc','#ffd6e8','#e8d5f5','#ffd6c8'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.random() * 10 + 7;
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px;
+      height: ${size}px;
+      background: radial-gradient(circle at 30% 30%, ${colors[Math.floor(Math.random()*colors.length)]}, #ff85bc);
+      animation-duration: ${Math.random() * 10 + 8}s;
+      animation-delay: ${Math.random() * 10}s;
+      opacity: 0;
+    `;
+    bg.appendChild(p);
+  }
+</script>
+</body>
+</html>
