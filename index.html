@@ -804,50 +804,211 @@
 </footer>
 
 <script>
-  // 一键导出简历 PDF
+  // ── 生成 A4 专用简历 DOM ──────────────────────────────────────────────
+  function buildPdfDom() {
+    const el = document.createElement('div');
+    el.id = 'pdf-area';
+    el.style.cssText = [
+      'position:fixed', 'left:-9999px', 'top:0',
+      'width:794px',           // A4 @ 96 dpi
+      'background:#fff',
+      'font-family:"Noto Serif SC","PingFang SC","Microsoft YaHei",serif',
+      'font-size:12px', 'color:#3d2b3d', 'line-height:1.6',
+      'padding:28px 32px', 'box-sizing:border-box'
+    ].join(';');
+
+    el.innerHTML = `
+<style>
+  #pdf-area *{box-sizing:border-box;margin:0;padding:0;}
+  #pdf-area .ph{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #f75fa0;padding-bottom:10px;margin-bottom:14px;}
+  #pdf-area .ph-left h1{font-size:22px;font-weight:700;color:#e83e8c;letter-spacing:4px;}
+  #pdf-area .ph-left p{font-size:11px;color:#7b5e7b;margin-top:3px;letter-spacing:2px;}
+  #pdf-area .ph-right{text-align:right;font-size:11px;color:#7b5e7b;line-height:1.9;}
+  #pdf-area .sec-title{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(90deg,#f75fa0,#c084fc);border-radius:4px;padding:3px 10px;margin:12px 0 7px;display:inline-block;letter-spacing:2px;}
+  #pdf-area .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
+  #pdf-area .row h3{font-size:12px;font-weight:700;color:#3d2b3d;}
+  #pdf-area .row .co{font-size:11px;color:#f75fa0;}
+  #pdf-area .row .tm{font-size:10.5px;color:#7b5e7b;white-space:nowrap;}
+  #pdf-area .desc{font-size:10.5px;color:#555;margin-bottom:4px;line-height:1.6;}
+  #pdf-area ul{padding-left:14px;margin-bottom:4px;}
+  #pdf-area ul li{font-size:10.5px;color:#555;line-height:1.65;list-style:none;position:relative;padding-left:10px;}
+  #pdf-area ul li::before{content:"✿";position:absolute;left:0;color:#f75fa0;font-size:9px;top:1px;}
+  #pdf-area .result-box{background:#fff0f6;border:1px solid #ffadd4;border-radius:6px;padding:5px 10px;font-size:10px;color:#7b5e7b;margin-top:5px;line-height:1.7;}
+  #pdf-area .result-box b{color:#e83e8c;}
+  #pdf-area .skills-table{width:100%;border-collapse:collapse;margin-bottom:4px;}
+  #pdf-area .skills-table td{vertical-align:top;padding:2px 6px 2px 0;font-size:10.5px;width:50%;}
+  #pdf-area .skill-lbl{font-weight:700;color:#f75fa0;display:inline-block;min-width:90px;}
+  #pdf-area .tags span{display:inline-block;background:#ffd6e8;color:#e83e8c;border-radius:10px;padding:1px 7px;font-size:9.5px;margin:1px 2px 1px 0;}
+  #pdf-area .cert-row{display:flex;flex-wrap:wrap;gap:6px;}
+  #pdf-area .cert-row span{background:#ffd6e8;color:#e83e8c;border-radius:8px;padding:2px 9px;font-size:10px;}
+  #pdf-area .eval-item{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;}
+  #pdf-area .eval-icon{flex-shrink:0;font-size:13px;line-height:1.6;}
+  #pdf-area .eval-item h4{font-size:11px;font-weight:700;color:#3d2b3d;}
+  #pdf-area .eval-item p{font-size:10.5px;color:#555;line-height:1.6;}
+  #pdf-area .divline{border:none;border-top:1px dashed #ffadd4;margin:8px 0;}
+</style>
+
+<!-- 顶部姓名联系 -->
+<div class="ph">
+  <div class="ph-left">
+    <h1>吴 诗 雨</h1>
+    <p>软件测试工程师 · 区块链技术专业</p>
+  </div>
+  <div class="ph-right">
+    📱 19194969055 &nbsp;|&nbsp; 📧 2198658911@qq.com<br/>
+    🌸 女 · 22岁 &nbsp;|&nbsp; 📍 深圳 &nbsp;|&nbsp; 💼 在职
+  </div>
+</div>
+
+<!-- 教育背景 -->
+<div class="sec-title">教育背景</div>
+<div class="row">
+  <div><h3>🎓 江西软件职业技术大学 &nbsp;<span style="font-weight:400;color:#7b5e7b;">本科 · 区块链技术</span></h3></div>
+  <span class="tm">2022.09 — 2026.06 &nbsp;|&nbsp; GPA 3.7/4.0</span>
+</div>
+<div class="desc" style="margin-top:2px;">主修软件测试基础、数据库原理、计算机网络等核心课程。荣誉：2023年全国大学生英语竞赛省一等奖 · 校级「学习标兵」</div>
+
+<hr class="divline"/>
+
+<!-- 专业技能 -->
+<div class="sec-title">专业技能</div>
+<table class="skills-table">
+  <tr>
+    <td><span class="skill-lbl">🧪 测试理论</span><div class="tags"><span>软件测试生命周期</span><span>等价类/边界值</span><span>判定表/场景法</span><span>敏捷开发</span><span>TAPD</span></div></td>
+    <td><span class="skill-lbl">🔌 接口与协议</span><div class="tags"><span>HTTP/HTTPS</span><span>TCP/IP</span><span>Cookie/Session/Token</span><span>Postman</span><span>Apipost</span><span>Fiddler</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="skill-lbl">🗄️ 数据库&Linux</span><div class="tags"><span>MySQL</span><span>增删改查/多表关联</span><span>Linux命令</span><span>日志分析</span><span>Docker</span><span>Nginx</span></div></td>
+    <td><span class="skill-lbl">🤖 自动化测试</span><div class="tags"><span>Python</span><span>Pytest</span><span>Playwright</span><span>Selenium</span><span>Electron自动化</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="skill-lbl">✨ AI辅助测试</span><div class="tags"><span>Claude</span><span>Cursor</span><span>Codex Skill录制</span><span>需求分析/用例生成</span><span>AI Agent开发</span></div></td>
+    <td><span class="skill-lbl">📱 多端测试</span><div class="tags"><span>PC客户端</span><span>Web端</span><span>Android/iOS移动端</span><span>兼容性测试</span><span>版本回归</span></div></td>
+  </tr>
+</table>
+
+<hr class="divline"/>
+
+<!-- 工作经历 -->
+<div class="sec-title">工作经历</div>
+<div class="row">
+  <div><h3>深圳极光矩阵科技有限公司</h3><span class="co">软件测试工程师</span></div>
+  <span class="tm">2025.08 — 至今</span>
+</div>
+<ul style="margin-top:4px;">
+  <li>负责魔岛平台国内版/海外版功能测试与版本回归，覆盖 MOD 功能、修改器、联机模块、社区、资讯、支付充值等核心业务模块</li>
+  <li>编写并维护测试用例，执行功能、回归、兼容性及异常流程测试，保障版本按期高质量交付</li>
+  <li>参与接口联调及问题定位，通过日志分析、抓包和数据库校验排查关键链路问题</li>
+  <li>推动自动化测试落地，沉淀核心回归场景，提升测试效率和版本稳定性</li>
+  <li>参与公司内部 AI Agent 项目「数字员工」的功能性测试（一键生成视频、AI客服、AI伴侣、自定义工作流等），并提出改善建议</li>
+  <li>开发 AI 测试辅助 Agent 并在测试组内推广，支持需求分析、截图/录屏分析及缺陷自动生成，探索 TAPD 自动提单能力</li>
+</ul>
+
+<hr class="divline"/>
+
+<!-- 项目经历 -->
+<div class="sec-title">项目经历</div>
+
+<!-- 项目1 -->
+<div class="row" style="margin-top:2px;">
+  <div><h3>🎮 魔岛游戏平台</h3><span class="co">软件测试工程师</span></div>
+  <span class="tm">2025.08 — 至今</span>
+</div>
+<div class="desc">综合游戏平台，涵盖 MOD 管理、游戏下载、修改器、游戏加速器、多人联机、会员体系、支付订单、社区互动等。技术栈：Electron + React + Tailwind CSS / Go + 微服务</div>
+<ul>
+  <li>参与需求评审，结合 PRD、原型及接口文档进行需求分析，梳理业务流程，识别测试风险</li>
+  <li>编写并维护测试用例，覆盖功能、回归、兼容性及异常流程测试，持续完善核心回归测试集</li>
+  <li>使用 Postman 进行接口联调；结合 Fiddler 抓包、日志分析及 MySQL 数据校验多维度定位问题</li>
+  <li>使用 TAPD 进行缺陷全生命周期管理；利用 Claude/Cursor/Codex 辅助需求分析与测试用例设计</li>
+</ul>
+<div class="result-box">🏆 参与 <b>30+</b> 个版本迭代 · 维护 <b>800+</b> 测试用例，覆盖 <b>8+</b> 核心模块 · 推动关闭 <b>400+</b> 缺陷（P1/P2 占比约 20%） · AI 辅助测试设计效率提升约 <b>30%</b></div>
+
+<!-- 项目2 -->
+<div class="row" style="margin-top:8px;">
+  <div><h3>🤖 AI 智能测试 Agent 平台</h3><span class="co">测试开发工程师</span></div>
+  <span class="tm">2026.03 — 至今</span>
+</div>
+<div class="desc">基于 Python、Cursor 及大模型能力独立开发的 AI 测试辅助平台，实现需求分析、测试点生成、截图/录屏分析及缺陷自动生成，从 0 到 1 搭建。</div>
+<ul>
+  <li>基于大模型实现需求文档解析及测试点自动生成，支持功能测试、异常流程、边界值等场景自动拆解</li>
+  <li>实现截图分析（UI异常/布局错位/文本截断）及录屏分析（页面跳转异常/按钮无响应/流程中断）能力</li>
+  <li>设计标准化 Bug 输出模板，自动生成缺陷标题、复现步骤、实际结果、预期结果及严重等级</li>
+  <li>基于 Playwright 实现 Web 端核心场景自动化回归；探索 Electron 客户端自动化测试方案</li>
+</ul>
+<div class="result-box">🏆 沉淀 Prompt <b>100+</b> 条 · 完成 Web 端核心场景自动化回归 · 显著减少需求分析及文档编写时间</div>
+
+<!-- 项目3 -->
+<div class="row" style="margin-top:8px;">
+  <div><h3>💬 创作者社区 · 移动端 App</h3><span class="co">测试工程师</span></div>
+  <span class="tm">2025.12 — 2026.02</span>
+</div>
+<div class="desc">面向内容创作者的移动端社交 App，核心功能涵盖关注关系链、粉丝体系、消息中心、私信聊天及聊天记录管理，支持文本、图片、语音、文件等多种消息类型。</div>
+<ul>
+  <li>参与移动端 App 多版本功能测试、回归测试及版本验收</li>
+  <li>开展 Android/iOS 多机型、多系统兼容性测试，验证不同设备下功能稳定性与交互一致性</li>
+  <li>针对前后台切换、网络切换、权限管理、消息推送等移动端典型场景开展专项测试</li>
+  <li>参与测试总结、测试报告编写及版本质量评估，为产品发布提供测试依据</li>
+</ul>
+<div class="result-box">🏆 参与 <b>8+</b> 个版本测试 · 推动关闭 <b>100+</b> 缺陷（含消息同步、未读状态等关键问题） · 完善 Android/iOS 兼容性测试矩阵</div>
+
+<hr class="divline"/>
+
+<!-- 证书 -->
+<div class="sec-title">证书与技能</div>
+<div class="cert-row">
+  <span>🏅 计算机二级（WPS）</span>
+  <span>🏅 软考初级·信息处理技术员</span>
+  <span>🔗 区块链应用开发 1+X 证书</span>
+  <span>🌐 英语四六级证书</span>
+  <span>🎤 普通话二级乙等</span>
+</div>
+
+<hr class="divline"/>
+
+<!-- 自我评价 -->
+<div class="sec-title">自我评价</div>
+<div class="eval-item"><span class="eval-icon">🔍</span><div><h4>全端测试经验 · 流程熟悉</h4><p>具备客户端、Web、移动端及接口测试经验，熟悉需求分析、测试设计、缺陷管理及版本交付全流程。</p></div></div>
+<div class="eval-item"><span class="eval-icon">🛠️</span><div><h4>较强的问题定位能力</h4><p>能结合抓包、SQL 查库及日志分析快速定位问题，从网络请求、接口返回、数据库及客户端展示多维度分析，有效降低与开发的沟通成本。</p></div></div>
+<div class="eval-item"><span class="eval-icon">✨</span><div><h4>AI 辅助测试实践者</h4><p>熟悉 AI 辅助测试实践，能利用大模型完成需求分析、测试点生成、缺陷生成及自动化测试辅助工作，将 AI 深度赋能日常测试。</p></div></div>
+<div class="eval-item" style="margin-bottom:0"><span class="eval-icon">🤖</span><div><h4>工程化思维 · 持续探索</h4><p>具备良好的学习能力和工程化思维，持续探索 AI 与测试结合场景，具备独立完成测试工具开发及落地实践经验。</p></div></div>
+    `;
+    return el;
+  }
+
+  // ── 一键导出简历 PDF ─────────────────────────────────────────────────
   function exportResume() {
     const btn = document.getElementById('downloadBtn');
     const label = btn.querySelector('.fab-label');
     btn.classList.add('loading');
     label.textContent = '生成中…';
 
-    // 隐藏导出时不需要的元素
-    const sakura = document.getElementById('sakuraBg');
-    const footer = document.querySelector('.footer');
-    sakura.style.display = 'none';
-    btn.style.display = 'none';
-    footer.style.display = 'none';
-
-    const el = document.body;
+    const pdfEl = buildPdfDom();
+    document.body.appendChild(pdfEl);
 
     const opt = {
-      margin:       [8, 8, 8, 8],
-      filename:     '吴诗雨_软件测试工程师简历.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  {
+      margin:      [0, 0, 0, 0],
+      filename:    '吴诗雨_软件测试工程师简历.pdf',
+      image:       { type: 'jpeg', quality: 0.97 },
+      html2canvas: {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#fff0f6',
-        windowWidth: 900
+        backgroundColor: '#ffffff',
+        width: 794,
+        windowWidth: 794
       },
       jsPDF: {
-        unit: 'mm',
-        format: 'a4',
+        unit: 'px',
+        format: [794, 1123],   // A4 像素尺寸 (96dpi)
         orientation: 'portrait',
+        hotfixes: ['px_scaling'],
         compress: true
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }
     };
 
-    html2pdf().set(opt).from(el).save().then(() => {
-      // 恢复隐藏的元素
-      sakura.style.display = '';
-      btn.style.display = '';
-      footer.style.display = '';
+    html2pdf().set(opt).from(pdfEl).save().then(() => {
+      document.body.removeChild(pdfEl);
       btn.classList.remove('loading');
-      label.textContent = '导出简历 PDF';
-      // 短暂显示成功状态
       btn.querySelector('.fab-icon').textContent = '✅';
       label.textContent = '下载成功！';
       setTimeout(() => {
@@ -855,9 +1016,7 @@
         label.textContent = '导出简历 PDF';
       }, 2500);
     }).catch(() => {
-      sakura.style.display = '';
-      btn.style.display = '';
-      footer.style.display = '';
+      if (document.body.contains(pdfEl)) document.body.removeChild(pdfEl);
       btn.classList.remove('loading');
       label.textContent = '导出简历 PDF';
     });
