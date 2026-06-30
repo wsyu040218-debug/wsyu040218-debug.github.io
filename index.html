@@ -987,44 +987,45 @@
     btn.classList.add('loading');
     label.textContent = '生成中…';
 
-    const pdfEl = buildPdfDom();
-
-    // 将 pdfEl 置于最顶层，html2canvas 可直接看到并捕获其内容
-    pdfEl.style.position = 'fixed';
-    pdfEl.style.top = '0';
-    pdfEl.style.left = '0';
-    pdfEl.style.zIndex = '10000';
-    pdfEl.style.overflow = 'visible';
-    document.body.appendChild(pdfEl);
+    // 滚动回顶部，确保 html2canvas 从页面顶部开始捕获
+    window.scrollTo(0, 0);
 
     const opt = {
-      margin:      [6, 6, 6, 6],
+      margin:      [0, 0, 0, 0],
       filename:    '吴诗雨_软件测试工程师简历.pdf',
-      image:       { type: 'jpeg', quality: 0.97 },
+      image:       { type: 'jpeg', quality: 0.95 },
       html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        ignoreElements: (el) => el.id === 'downloadBtn' || el.classList.contains('sakura-bg')
+        scale:           1.5,
+        useCORS:         true,
+        allowTaint:      true,
+        logging:         false,
+        backgroundColor: '#fff0f6',
+        scrollX:         0,
+        scrollY:         0,
+        // 排除樱花动画和下载按钮，不让它们出现在 PDF 里
+        ignoreElements: (el) => el.id === 'sakuraBg' || el.id === 'downloadBtn',
+        onclone: (clonedDoc) => {
+          // 移除 Google Fonts 链接，防止在部分网络环境下请求超时导致挂起
+          clonedDoc.querySelectorAll(
+            'link[href*="fonts.googleapis"], link[href*="fonts.gstatic"]'
+          ).forEach(l => l.remove());
+        }
       },
       jsPDF: {
-        unit: 'mm',
-        format: 'a4',
+        unit:        'mm',
+        format:      'a4',
         orientation: 'portrait'
-      }
+      },
+      pagebreak: { mode: 'avoid-all' }
     };
 
-    const done = () => {
-      if (document.body.contains(pdfEl)) document.body.removeChild(pdfEl);
-    };
-
-    // 等两帧让浏览器完成布局后再截图
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      html2pdf().set(opt).from(pdfEl).save()
+    // 等 300ms 让滚动和布局稳定后再截图
+    setTimeout(() => {
+      html2pdf()
+        .set(opt)
+        .from(document.body)
+        .save()
         .then(() => {
-          done();
           btn.classList.remove('loading');
           btn.querySelector('.fab-icon').textContent = '✅';
           label.textContent = '下载成功！';
@@ -1035,11 +1036,10 @@
         })
         .catch(err => {
           console.error('PDF export error:', err);
-          done();
           btn.classList.remove('loading');
           label.textContent = '导出简历 PDF';
         });
-    }));
+    }, 300);
   }
 
   // ── 头像保护：Canvas 渲染 + 水印 ────────────────────────────────────────
