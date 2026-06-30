@@ -536,9 +536,10 @@
   <h1 class="hero-name">吴 诗 雨</h1>
   <p class="hero-title">软件测试工程师 · 区块链技术专业</p>
   <div class="hero-contact">
-    <a class="contact-pill" href="tel:19194969055">
-      <span class="icon">📱</span> 19194969055
-    </a>
+    <span class="contact-pill phone-pill" id="phonePill" onclick="revealPhone()" style="cursor:pointer;" title="点击查看完整号码">
+      <span class="icon">📱</span>
+      <span id="phoneText">191****9055</span>
+    </span>
     <a class="contact-pill" href="mailto:2198658911@qq.com">
       <span class="icon">📧</span> 2198658911@qq.com
     </a>
@@ -860,7 +861,7 @@
     <p>软件测试工程师 · 区块链技术专业</p>
   </div>
   <div class="ph-right">
-    📱 19194969055 &nbsp;|&nbsp; 📧 2198658911@qq.com<br/>
+    📱 191****9055 &nbsp;|&nbsp; 📧 2198658911@qq.com<br/>
     🌸 女 · 22岁 &nbsp;|&nbsp; 📍 深圳 &nbsp;|&nbsp; 🌿 离职
   </div>
 </div>
@@ -1040,6 +1041,27 @@
           label.textContent = '导出简历 PDF';
         });
     }, 300);
+  }
+
+  // ── 手机号点击展开 ────────────────────────────────────────────────────────
+  let phoneRevealed = false;
+  function revealPhone() {
+    const pill = document.getElementById('phonePill');
+    const txt  = document.getElementById('phoneText');
+    if (!phoneRevealed) {
+      phoneRevealed = true;
+      txt.textContent = '19194969055';
+      pill.setAttribute('href', 'tel:19194969055');
+      pill.title = '点击拨打';
+      pill.onclick = function () { window.location.href = 'tel:19194969055'; };
+      // 10 秒后自动重新隐藏
+      setTimeout(() => {
+        phoneRevealed = false;
+        txt.textContent = '191****9055';
+        pill.title = '点击查看完整号码';
+        pill.onclick = revealPhone;
+      }, 10000);
+    }
   }
 
   // ── 头像保护：Canvas 渲染 + 水印 ────────────────────────────────────────
