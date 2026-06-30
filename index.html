@@ -6,6 +6,7 @@
   <title>吴诗雨 · 测试工程师</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
       --pink-50:  #fff0f6;
@@ -430,6 +431,66 @@
       line-height: 1.75;
     }
 
+    /* 悬浮下载按钮 */
+    .fab-download {
+      position: fixed;
+      bottom: 36px;
+      right: 32px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--pink-400), var(--lavender-deep));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 24px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      font-family: 'Noto Serif SC', sans-serif;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(232, 62, 140, 0.45);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      white-space: nowrap;
+    }
+    .fab-download:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 16px 40px rgba(232, 62, 140, 0.55);
+    }
+    .fab-download:active { transform: translateY(0) scale(0.97); }
+    .fab-download .fab-icon { font-size: 1.1rem; }
+    .fab-download.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .fab-download .fab-spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .fab-download.loading .fab-icon  { display: none; }
+    .fab-download.loading .fab-spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== 打印 / PDF 专用样式 ===== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .sakura-bg, .fab-download, .footer { display: none !important; }
+      body {
+        background: white !important;
+        font-size: 12px;
+      }
+      .hero { padding: 24px 20px 16px; }
+      .hero-name { font-size: 2rem; }
+      .card { break-inside: avoid; box-shadow: none; border-color: #ffadd4; margin-bottom: 12px; }
+      .card:hover { transform: none; }
+      .container { padding-bottom: 20px; }
+    }
+
     /* 底部装饰 */
     .footer {
       position: relative;
@@ -727,12 +788,78 @@
 
 </main>
 
+<!-- 悬浮下载按钮 -->
+<button class="fab-download" id="downloadBtn" onclick="exportResume()">
+  <span class="fab-icon">⬇️</span>
+  <div class="fab-spinner"></div>
+  <span class="fab-label">导出简历 PDF</span>
+</button>
+
 <!-- Footer -->
 <footer class="footer">
   <span>Made with <span class="heart">💗</span> by 吴诗雨 · 2026</span>
 </footer>
 
 <script>
+  // 一键导出简历 PDF
+  function exportResume() {
+    const btn = document.getElementById('downloadBtn');
+    const label = btn.querySelector('.fab-label');
+    btn.classList.add('loading');
+    label.textContent = '生成中…';
+
+    // 隐藏导出时不需要的元素
+    const sakura = document.getElementById('sakuraBg');
+    const footer = document.querySelector('.footer');
+    sakura.style.display = 'none';
+    btn.style.display = 'none';
+    footer.style.display = 'none';
+
+    const el = document.body;
+
+    const opt = {
+      margin:       [8, 8, 8, 8],
+      filename:     '吴诗雨_软件测试工程师简历.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#fff0f6',
+        windowWidth: 900
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf().set(opt).from(el).save().then(() => {
+      // 恢复隐藏的元素
+      sakura.style.display = '';
+      btn.style.display = '';
+      footer.style.display = '';
+      btn.classList.remove('loading');
+      label.textContent = '导出简历 PDF';
+      // 短暂显示成功状态
+      btn.querySelector('.fab-icon').textContent = '✅';
+      label.textContent = '下载成功！';
+      setTimeout(() => {
+        btn.querySelector('.fab-icon').textContent = '⬇️';
+        label.textContent = '导出简历 PDF';
+      }, 2500);
+    }).catch(() => {
+      sakura.style.display = '';
+      btn.style.display = '';
+      footer.style.display = '';
+      btn.classList.remove('loading');
+      label.textContent = '导出简历 PDF';
+    });
+  }
+
   // 生成飘落樱花花瓣
   const bg = document.getElementById('sakuraBg');
   const colors = ['#ffb8d4','#ff85bc','#ffd6e8','#e8d5f5','#ffd6c8'];
